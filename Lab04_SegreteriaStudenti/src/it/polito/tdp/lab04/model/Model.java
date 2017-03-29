@@ -4,6 +4,8 @@ import java.util.*;
 import it.polito.tdp.lab04.DAO.CorsoDAO;
 import it.polito.tdp.lab04.DAO.StudenteDAO;
 
+// prova vommitt
+
 public class Model {
 
 	private List<Corso> corsi = new LinkedList <Corso> () ;
@@ -12,8 +14,7 @@ public class Model {
 	
 	public List<Corso> addCorsi(){
 		corsi=cd.getTuttiICorsi() ;
-		return corsi ;
-	}
+		return corsi ;	}
 	
 	public Studente cercaStudente(int m){
 		List<Studente> studenti =sd.getTuttiGliStudenti() ;
@@ -26,7 +27,6 @@ public class Model {
 		if(s!=null)
 			sd.getStudente(s);
 		return s;
-		
 	}
 	
 	public List <Studente> cercaIscritti(Corso c){
