@@ -1,5 +1,9 @@
 package it.polito.tdp.lab04.controller;
 
+import it.polito.tdp.lab04.DAO.ConnectDB;
+import it.polito.tdp.lab04.DAO.CorsoDAO;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,6 +11,7 @@ import java.util.List;
 import it.polito.tdp.lab04.model.Corso;
 import it.polito.tdp.lab04.model.Model;
 import it.polito.tdp.lab04.model.Studente;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -50,33 +55,80 @@ public class SegreteriaStudentiController {
 	private TextField txtCognome;
 
 	public void setModel(Model model) {
-
+		this.model = model ;
+		corsi = this.model.addCorsi();
+		
+		for(Corso c : corsi){
+			comboCorso.getItems().add(c);
+		}
+		comboCorso.getItems().add(null) ;
 	}
 
 	@FXML
 	void doReset(ActionEvent event) {
-
+		txtResult.clear() ;
+		txtMatricola.clear() ;
+		txtNome.clear() ;
+		txtCognome.clear() ;
 	}
 
 	@FXML
 	void doCercaNome(ActionEvent event) {
-
-	}
+		int m = Integer.parseInt(txtMatricola.getText());
+		Studente s = this.model.cercaStudente(m);
+		if(s!=null){
+		txtNome.setText(s.getNomeS());
+		txtCognome.setText(s.getCognomeS());
+		}
+		else{
+			txtResult.setText("Studente non esistente");}
+		}
+		
 
 	@FXML
 	void doCercaIscrittiCorso(ActionEvent event) {
-
+		Corso c = comboCorso.getValue();
+		if(c==null){
+			txtResult.setText("nessun corso selezionato");
+		}
+		else{
+		List<Studente> iscritti = this.model.cercaIscritti(c);
+		for(Studente s : iscritti){
+			txtResult.appendText(s.toString()+"\n");
+			}
+		}
 	}
 
 	@FXML
 	void doCercaCorsi(ActionEvent event) {
+		Studente s = this.model.cercaStudente(Integer.parseInt(txtMatricola.getText())) ;
+		if(s==null){
+			txtResult.setText("studente non trovato");
+		}
+		else{
+		List<Corso> frequentati = this.model.corsiFrequentati(s);
+		for(Corso c : frequentati){
+			txtResult.appendText(c.toString()+"\n");
+			}
+		
+		}
 
 	}
 
 	@FXML
 	void doIscrivi(ActionEvent event) {
-
-	}
+		Studente s =  this.model.cercaStudente(Integer.parseInt(txtMatricola.getText())) ;
+		Corso c = comboCorso.getValue();
+		if(c!=null && s!=null){
+		List<Corso> frequentati = this.model.corsiFrequentati(s);
+		if(frequentati.contains(c)){
+			txtResult.setText("Studente iscritto");
+			}
+		}
+		else{
+			txtResult.setText("Studente non iscritto");
+			}
+		}
 
 	@FXML
 	void initialize() {
@@ -90,6 +142,7 @@ public class SegreteriaStudentiController {
 		assert btnIscrivi != null : "fx:id=\"btnIscrivi\" was not injected: check your FXML file 'SegreteriaStudenti.fxml'.";
 		assert txtMatricola != null : "fx:id=\"txtMatricola\" was not injected: check your FXML file 'SegreteriaStudenti.fxml'.";
 		assert btnReset != null : "fx:id=\"btnReset\" was not injected: check your FXML file 'SegreteriaStudenti.fxml'.";
-	}
+
+		}
 
 }
